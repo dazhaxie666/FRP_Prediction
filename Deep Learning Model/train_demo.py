@@ -6,6 +6,7 @@ from MultimodalEncoder import StateBlock, DynamicBlock, ConstantBlock, CombinedB
 from BackboneEncoder import Encoder  
 from BackboneDecoder import Decoder 
 import torch.nn.functional as F
+from loss_function import CombinedLoss
 
 # Set the device for computation - GPU if available, else CPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -37,4 +38,30 @@ encoder = Encoder().to(device)  # Move the Encoder to the computation device
 decoder = Decoder().to(device)  # Move the Decoder to the computation device
 
 # Define the full network by combining the blocks with the encoder and decoder
-full_network = FullNetwork(combined_block, encoder, decoder).to(device)  # Move the Full Network to the computation device
+model = FullNetwork(combined_block, encoder, decoder).to(device)  # Move the Full Network to the computation device
+
+
+criterion = CombinedLoss(w1=0.6)
+
+optimizer = optim.Adam(model.parameters(), lr=0.0001)
+
+num_epochs = 1000 # 
+for epoch in range(num_epochs):
+    model.train()
+    total_loss = 0.0
+
+    for batch_num, (A_input, B_input, C_input, A_target) in enumerate(dataloader, 1):
+        A_input, B_input, C_input, A_target = A_input.to(device), B_input.to(device), C_input.to(device), A_target.to(device)
+        optimizer.zero_grad()
+        outputs = model(A_input, B_input, C_input)
+        loss = criterion(outputs, A_target)
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item()
+
+        if batch_num % 100 == 0:
+            print(f"Epoch [{epoch+1}/{num_epochs}], Step [{batch_num}/{len(dataloader)}], Loss: {loss.item()}")
+
+    avg_loss = total_loss / len(dataloader)
+    print(f'Epoch [{epoch+1}/{num_epochs}], Average Loss: {avg_loss}')
