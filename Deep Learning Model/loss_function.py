@@ -187,7 +187,7 @@ class CombinedLoss(nn.Module):
         """
         # Calculate MSE loss
         loss_mse = self.mse_loss(y_pred, y_true)
-        # Calculate SSIM loss. Assumes y_pred and y_true are normalized in the range [0, 1].
+        # Calculate SSIM loss. 
         loss_ssim = 1 - ssim(y_pred, y_true, data_range=1, size_average=True)
         # Combine the losses using the specified weights
         combined_loss = self.w1 * loss_mse + self.w2 * loss_ssim
