@@ -52,3 +52,19 @@ class FireDataset(Dataset):
         C_input = C
         
         return A_input, B_input, C_input,A_target
+torch.manual_seed(0)
+dataset = FireDataset(root_dir='path_to_your_data')
+
+# 计算每个部分的大小
+total_size = len(dataset)
+train_size = int(total_size * 0.7)
+val_size = int(total_size * 0.1)
+test_size = total_size - train_size - val_size
+
+# 将数据集分割为训练、验证和测试集
+train_dataset, val_dataset, test_dataset = random_split(dataset, [train_size, val_size, test_size])
+
+# 创建 DataLoader
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+test_loader = DataLoader(test_dataset, batch_size=32, shuffle=False)
