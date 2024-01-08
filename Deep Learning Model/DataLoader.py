@@ -2,7 +2,8 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 import os
 import numpy as np
-
+"""The implementation of the DataLoader in this Python file is specifically tailored to the structure and organization of the author's dataset. It is dependent on the hierarchical arrangement and location of the data as established by the user. For use with different datasets, adjustments to the file paths, naming conventions, and data handling methods within the DataLoader might be necessary.
+"""
 class FireDataset(Dataset):
     """A custom Dataset class for fire data."""
     def __init__(self, root_dir):
@@ -14,7 +15,7 @@ class FireDataset(Dataset):
                             Each sub-directory represents a fire incident.
         """
         self.root_dir = root_dir
-        self.fire_names = os.listdir(root_dir)  # Assuming each fire incident is in its own subdirectory.
+        self.fire_names = os.listdir(root_dir)  
 
         self.sample_index_ranges = []  # To store the index range of samples for each fire incident
         total_samples = 0  # To count the total number of samples across all incidents
