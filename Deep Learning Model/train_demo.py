@@ -39,8 +39,7 @@ decoder = Decoder().to(device)  # Move the Decoder to the computation device
 
 # Define the full network by combining the blocks with the encoder and decoder
 model = FullNetwork(combined_block, encoder, decoder).to(device)  # Move the Full Network to the computation device
-
-
+dataloader = traindataloader()
 criterion = CombinedLoss(w1=0.6)
 
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
