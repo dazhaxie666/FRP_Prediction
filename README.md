@@ -52,4 +52,5 @@ From an overall perspective, the deep learning architecture presented in this ar
 |                  | TransConv   | 64x2x2      | 32x4x4       | (3x3)       | 32             | 2      |
 |                  | TransConv   | 32x4x4      | 16x8x8       | (3x3)       | 16             | 2      |
 |                  | Conv        | 16x8x8      | 1x64x64      | (1x1)       | 1              | 1      |
+
 This article uses pytorch for training, and the specific code can be found in this repository.
