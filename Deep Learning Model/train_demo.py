@@ -38,29 +38,44 @@ encoder = Encoder().to(device)  # Move the Encoder to the computation device
 decoder = Decoder().to(device)  # Move the Decoder to the computation device
 
 # Define the full network by combining the blocks with the encoder and decoder
-model = FullNetwork(combined_block, encoder, decoder).to(device)  # Move the Full Network to the computation device
-dataloader = train_dataloader()
+model = FullNetwork(combined_block, encoder, decoder).to(device)
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+val_loader = DataLoader(val_dataset, batch_size=32, shuffle=False)
 criterion = CombinedLoss(w1=0.6)
-
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
 
-num_epochs = 1000 # 
-for epoch in range(num_epochs):
-    model.train()
-    total_loss = 0.0
+num_epochs = 1000 # Define number of epochs
 
-    for batch_num, (A_input, B_input, C_input, A_target) in enumerate(dataloader, 1):
+for epoch in range(num_epochs):
+    # Training phase
+    model.train()
+    total_train_loss = 0.0
+
+    for A_input, B_input, C_input, A_target in train_loader:
+        # Move tensors to the configured device
         A_input, B_input, C_input, A_target = A_input.to(device), B_input.to(device), C_input.to(device), A_target.to(device)
+
+        # Forward pass
         optimizer.zero_grad()
         outputs = model(A_input, B_input, C_input)
         loss = criterion(outputs, A_target)
         loss.backward()
         optimizer.step()
 
-        total_loss += loss.item()
+        total_train_loss += loss.item()
 
-        if batch_num % 100 == 0:
-            print(f"Epoch [{epoch+1}/{num_epochs}], Step [{batch_num}/{len(dataloader)}], Loss: {loss.item()}")
+    avg_train_loss = total_train_loss / len(train_loader)
 
-    avg_loss = total_loss / len(dataloader)
-    print(f'Epoch [{epoch+1}/{num_epochs}], Average Loss: {avg_loss}')
+    # Validation phase
+    model.eval()
+    total_val_loss = 0.0
+    with torch.no_grad():
+        for A_input, B_input, C_input, A_target in val_loader:
+            A_input, B_input, C_input, A_target = A_input.to(device), B_input.to(device), C_input.to(device), A_target.to(device)
+            outputs = model(A_input, B_input, C_input)
+            loss = criterion(outputs, A_target)
+            total_val_loss += loss.item()
+
+    avg_val_loss = total_val_loss / len(val_loader)
+
+    print(f"Epoch [{epoch+1}/{num_epochs}], Average Training Loss: {avg_train_loss}, Average Validation Loss: {avg_val_loss}")
