@@ -7,7 +7,7 @@ from BackboneEncoder import Encoder
 from BackboneDecoder import Decoder 
 import torch.nn.functional as F
 from loss_function import CombinedLoss
-
+from DataLoader import train_dataloader
 # Set the device for computation - GPU if available, else CPU
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -39,7 +39,7 @@ decoder = Decoder().to(device)  # Move the Decoder to the computation device
 
 # Define the full network by combining the blocks with the encoder and decoder
 model = FullNetwork(combined_block, encoder, decoder).to(device)  # Move the Full Network to the computation device
-dataloader = traindataloader()
+dataloader = train_dataloader()
 criterion = CombinedLoss(w1=0.6)
 
 optimizer = optim.Adam(model.parameters(), lr=0.0001)
