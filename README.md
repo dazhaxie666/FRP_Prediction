@@ -53,4 +53,4 @@ From an overall perspective, the deep learning architecture presented in this ar
 |                  | TransConv   | 32x4x4      | 16x8x8       | (3x3)       | 16             | 2      |
 |                  | Conv        | 16x8x8      | 1x64x64      | (1x1)       | 1              | 1      |
 
-Training is implemented using PyTorch, and the detailed code can be found in the repository folder named '[Deep learning MODEL](./Deep Learning Model)'.
+Training is implemented using PyTorch, and the detailed code can be found in the repository folder named '[Deep learning MODEL](FRP_Prediction/Deep Learning Model)'.
